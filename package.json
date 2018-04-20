@@ -1,0 +1,14 @@
+{
+  "name": "wsmock-js",
+  "version": "1.0.0",
+  "main": "./src/wsmock.js",
+  "author": "ccc",
+  "license": "MIT",
+  "scripts": {
+    "start": "http-server -a 127.0.0.1 -p 7070"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "http-server": "^0.11.1"
+  }
+}
