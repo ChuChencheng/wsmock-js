@@ -137,7 +137,13 @@ class WebSocket extends _EventTarget {
   _defineFields () {
     // window.WebSocket fields
     this.binaryType = 'blob'
-    // Don't know how to calculate it.
+    // bufferedAmount: UTF-8 text or binary data
+    // For those data that is not a string or binary data, its `toString` method will be called then return the length.
+    // Example: ws.send({ a: 1 }), bufferedAmount = ({ a: 1 }).toString().length => "[object Object]".length => 15
+    // [1, 2, 3] => [1, 2, 3].toString().length => "1,2,3".length => 5
+    // See https://html.spec.whatwg.org/multipage/web-sockets.html#dom-websocket-bufferedamount
+    // And https://github.com/chromium/chromium/blob/0aee4434a4dba42a42abaea9bfbc0cd196a63bc1/third_party/blink/renderer/modules/websockets/dom_web_socket.cc#L416
+    // An implementation https://github.com/theturtle32/WebSocket-Node/blob/1037571aee32edd0c9008bda57cbf4c0d55fad36/lib/W3CWebSocket.js#L109
     this.bufferedAmount = 0
     this.extensions = ''
     this.onclose = null
