@@ -97,13 +97,13 @@ class WebSocket extends _EventTarget {
       if (mockSocketUrls[i] === url) {
         this._defineFields()
         this._observeProps()
-        this.url = url
-        this.protocol = protocols
+        this._url = url
+        this._protocol = protocols
         
         this._index = i
         this._attachEvents()
         setTimeout(() => {
-          this.readyState = WebSocket.OPEN
+          this._readyState = WebSocket.OPEN
         }, WsMock.settings.CONNECTING_TIME)
         return
       }
@@ -113,7 +113,7 @@ class WebSocket extends _EventTarget {
   }
 
   send (data) {
-    if (this.readyState !== WebSocket.OPEN) return
+    if (this._readyState !== WebSocket.OPEN) return
     const settings = mockSocketSettings[this._index]
     const waitingTime = (WsMock.settings.TOTAL_BUFFER_SIZE / WsMock.settings.SEND_RATE) * 1000
     setTimeout(() => {
@@ -125,12 +125,12 @@ class WebSocket extends _EventTarget {
   }
 
   close (code = 1000, reason) {
-    this.readyState = WebSocket.CLOSING
+    this._readyState = WebSocket.CLOSING
     setTimeout(() => {
       this._closeEventDict.code = code
       reason && (this._closeEventDict.reason = reason)
       this.removeAllListeners('message')
-      this.readyState = WebSocket.CLOSED
+      this._readyState = WebSocket.CLOSED
     }, WsMock.settings.CLOSING_TIME)
   }
 
@@ -147,6 +147,13 @@ class WebSocket extends _EventTarget {
     this.protocol = ''
     this.readyState = WebSocket.CONNECTING
     this.url = null
+
+    // 'Invisible' WebSocket fields
+    this._bufferedAmount = 0
+    this._extensions = ''
+    this._protocol = ''
+    this._readyState = WebSocket.CONNECTING
+    this._url = null
   
     // Custom fields
     this._index = -1
@@ -174,8 +181,12 @@ class WebSocket extends _EventTarget {
 
   _observeProps () {
     this._observeBinaryType()
+    this._observeBufferedAmount()
+    this._observeExtensions()
+    this._observeProtocol()
     this._observeOnEvents()
     this._observeReadyState()
+    this._observeUrl()
   }
 
   _observeBinaryType () {
@@ -195,6 +206,18 @@ class WebSocket extends _EventTarget {
         }
       },
     })
+  }
+
+  _observeBufferedAmount () {
+    this._observeReadOnlyProps('bufferedAmount', 0)
+  }
+
+  _observeExtensions () {
+    this._observeReadOnlyProps('extensions', '')
+  }
+
+  _observeProtocol () {
+    this._observeReadOnlyProps('protocol', '')
   }
 
   _observeOnEvents () {
@@ -219,31 +242,48 @@ class WebSocket extends _EventTarget {
   }
 
   _observeReadyState () {
-    let readyStateValue = WebSocket.CONNECTING
-    Object.defineProperty(this, 'readyState', {
+    this._observeReadOnlyProps('readyState', WebSocket.CONNECTING, (val) => {
+      switch (val) {
+        case WebSocket.OPEN:
+          this.dispatchEvent(new CustomEvent('open'))
+          break
+        case WebSocket.CLOSED:
+          this.dispatchEvent(new CloseEvent('close', {
+            code: this._closeEventDict.code,
+            reason: this._closeEventDict.reason,
+            wasClean: this._closeEventDict.wasClean
+          }))
+          break
+        default:
+          break
+      }
+    })
+  }
+
+  _observeUrl () {
+    this._observeReadOnlyProps('url', null)
+  }
+
+  _observeReadOnlyProps (propName, defaultValue, setterCallback) {
+    let propValue = defaultValue
+    Object.defineProperty(this, `_${propName}`, {
       configurable: true,
-      enumerable: true,
+      enumerable: false,
       get () {
-        return readyStateValue
+        return propValue
       },
       set (val) {
-        readyStateValue = val
-        switch (val) {
-          case WebSocket.OPEN:
-            this.dispatchEvent(new CustomEvent('open'))
-            break
-          case WebSocket.CLOSED:
-            this.dispatchEvent(new CloseEvent('close', {
-              code: this._closeEventDict.code,
-              reason: this._closeEventDict.reason,
-              wasClean: this._closeEventDict.wasClean
-            }))
-            break
-          default:
-            break
-        }
+        propValue = val
+        setterCallback && (typeof setterCallback === 'function') && setterCallback.call(this, val)
+        Object.defineProperty(this, propName, {
+          value: propValue,
+          configurable: true,
+          enumerable: true,
+          writable: false,
+        })
       },
     })
+    this[`_${propName}`] = defaultValue
   }
 }
 
