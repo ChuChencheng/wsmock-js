@@ -1,6 +1,6 @@
-export const mockUrl = 'ws://some.mock.url'
+const mockUrl = 'ws://some.mock.url'
 
-export const settings = (wsm) => {
+const settings = (wsm) => {
   wsm.mock({
     url: mockUrl,
     sendInterval: 10000,
