@@ -1,7 +1,6 @@
-import wsm from '../src/wsmock.js'
 import { settings, mockUrl } from './settings.js'
 
-settings(wsm)
+settings(WsMock)
 
 let ws
 

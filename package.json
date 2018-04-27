@@ -5,10 +5,15 @@
   "author": "ccc",
   "license": "MIT",
   "scripts": {
+    "build": "webpack --config webpack.conf.js",
     "start": "http-server -a 127.0.0.1 -p 7070"
   },
   "dependencies": {},
   "devDependencies": {
-    "http-server": "^0.11.1"
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.4",
+    "babel-preset-env": "^1.6.1",
+    "http-server": "^0.11.1",
+    "webpack": "3.9.1"
   }
 }
