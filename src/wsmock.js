@@ -113,7 +113,13 @@ class WebSocket extends _EventTarget {
   }
 
   send (data) {
-    if (this._readyState !== WebSocket.OPEN) return
+    if (this._readyState === WebSocket.CONNECTING) {
+      throw new DOMException(`Failed to execute 'send' on 'WebSocket': Still in CONNECTING state.`, 'InvalidStateError')
+      return
+    } else if (this._readyState !== WebSocket.OPEN) {
+      console.error('WebSocket is already in CLOSING or CLOSED state.')
+      return
+    }
     const settings = mockSocketSettings[this._index]
     const waitingTime = (WsMock.settings.TOTAL_BUFFER_SIZE / WsMock.settings.SEND_RATE) * 1000
     setTimeout(() => {
@@ -125,6 +131,13 @@ class WebSocket extends _EventTarget {
   }
 
   close (code = 1000, reason) {
+    code = Number(code)
+    code = (isNaN(code) || code < 0) ? 0 : (code > 65535 ? 65535 : code)
+    // https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent#Status_codes
+    if (code !== 1000 && (code < 3000 || code > 4999)) {
+      throw new DOMException(`Failed to execute 'close' on 'WebSocket': The code must be either 1000, or between 3000 and 4999. ${code} is neither.`, 'InvalidAccessError')
+      return
+    }
     this._readyState = WebSocket.CLOSING
     setTimeout(() => {
       this._closeEventDict.code = code
@@ -293,14 +306,14 @@ class WebSocket extends _EventTarget {
   }
 }
 
-WebSocket.prototype.CONNECTING = 0
 WebSocket.CONNECTING = 0
-WebSocket.prototype.OPEN = 1
+WebSocket.prototype.CONNECTING = WebSocket.CONNECTING
 WebSocket.OPEN = 1
-WebSocket.prototype.CLOSING = 2
+WebSocket.prototype.OPEN = WebSocket.OPEN
 WebSocket.CLOSING = 2
-WebSocket.prototype.CLOSED = 3
+WebSocket.prototype.CLOSING = WebSocket.CLOSING
 WebSocket.CLOSED = 3
+WebSocket.prototype.CLOSED = WebSocket.CLOSED
 
 const _storeMock = (settings) => {
   let existIndex = -1
