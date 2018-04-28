@@ -10,9 +10,9 @@ const open = () => {
   }
 
   ws.onmessage = (event) => {
-    console.log('%c------On message start------', 'color: red;')
+    console.log('%c------On message start------', 'color: green;')
     console.dir(event)
-    console.log('%c------On message end------', 'color: red;')
+    console.log('%c------On message end------', 'color: green;')
   }
 
   ws.onclose = () => {
@@ -23,6 +23,7 @@ const open = () => {
 const send = () => {
   if (!ws) return
   ws.send('A message from browser')
+  console.log(`%cBufferedAnoumt of this message sent: ${ws.bufferedAmount}`, 'color: blue;')
 }
 
 const close = () => {

@@ -36,12 +36,37 @@ class WebSocket extends _EventTarget {
       console.error('WebSocket is already in CLOSING or CLOSED state.')
       return
     }
+    let dataSize = 0
+    // Data type confirm
+    // String.
+    if (typeof data === 'string' || data instanceof String) {
+      dataSize += data.length
+    }
+    // ArrayBuffer. Use arrayBuffer.byteLength
+    else if (data instanceof ArrayBuffer) {
+      dataSize += data.byteLength
+    }
+    // Blob. Use blob.size
+    else if (data instanceof Blob) {
+      dataSize += data.size
+    }
+    // ArrayBufferView/TypedArray. Judge if has byteLength and BYTES_PER_ELEMENT
+    else if (data.byteLength) {
+      dataSize += data.byteLength * (data.BYTES_PER_ELEMENT || 1)
+    }
+    // Other type. Invoke its toString method then use the 'length' property
+    else {
+      // Not sure what will be sent yet. Need to be tested on server side.
+      dataSize += ((data.toString && data.toString().length) || (data === null && 4) || (data === undefined && 9))
+    }
+    this._bufferedAmount += dataSize
     const settings = mockSocketSettings[this._index]
     const waitingTime = (WsMock.settings.TOTAL_BUFFER_SIZE / WsMock.settings.SEND_RATE) * 1000
     setTimeout(() => {
       settings.map((setting) => {
         const receiver = setting.receiver
         receiver && receiver.call(setting, data)
+        this._bufferedAmount -= dataSize
       })
     }, waitingTime)
   }

@@ -6,7 +6,8 @@
   "license": "MIT",
   "scripts": {
     "build": "webpack --config webpack.conf.js",
-    "start": "webpack-dev-server --open --config webpack.dev.conf.js"
+    "dev": "webpack --config webpack.dev.conf.js",
+    "start": "npm run dev && webpack-dev-server --open --config webpack.dev.conf.js"
   },
   "dependencies": {},
   "devDependencies": {
