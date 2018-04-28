@@ -57,6 +57,7 @@ class WebSocket extends _EventTarget {
     // Other type. Invoke its toString method then use the 'length' property
     else {
       // Not sure what will be sent yet. Need to be tested on server side.
+      //test
       dataSize += ((data.toString && data.toString().length) || (data === null && 4) || (data === undefined && 9))
     }
     this._bufferedAmount += dataSize

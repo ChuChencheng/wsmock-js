@@ -1,3 +1,4 @@
+import { mockUrl, settings } from './settings'
 settings(WsMock)
 
 let ws
