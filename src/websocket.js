@@ -1,3 +1,9 @@
+/**
+ * How Webkit implements WebSocket.
+ * WebSocket.h  -https://github.com/WebKit/webkit/blob/5ba65e3c7d14bc3230381f786534e50bb5f3c593/Source/WebCore/Modules/websockets/WebSocket.h
+ * WebSocket.cpp  -https://github.com/WebKit/webkit/blob/5ba65e3c7d14bc3230381f786534e50bb5f3c593/Source/WebCore/Modules/websockets/WebSocket.cpp
+ */
+
 import _EventTarget from './event-target'
 import _eventBus from './event-bus'
 import WsMock from './wsmock'
@@ -8,6 +14,10 @@ const _WebSocket = window.WebSocket
 // Override native
 class WebSocket extends _EventTarget {
   constructor (url, protocols) {
+    if (arguments.length < 1) {
+      throw TypeError(`Failed to construct 'WebSocket': 1 argument required, but only 0 present.`)
+      return
+    }
     super()
     for (let i = 0; i < mockSocketUrls.length; i++) {
       if (mockSocketUrls[i] === url) {
@@ -29,6 +39,10 @@ class WebSocket extends _EventTarget {
   }
 
   send (data) {
+    if (arguments.length < 1) {
+      throw new TypeError(`Failed to execute 'send' on 'WebSocket': 1 argument required, but only 0 present.`)
+      return
+    }
     if (this._readyState === WebSocket.CONNECTING) {
       throw new DOMException(`Failed to execute 'send' on 'WebSocket': Still in CONNECTING state.`, 'InvalidStateError')
       return
@@ -37,6 +51,7 @@ class WebSocket extends _EventTarget {
       return
     }
     let dataSize = 0
+    let dataToBeSent = data
     // Data type confirm
     // String.
     if (typeof data === 'string' || data instanceof String) {
@@ -54,11 +69,10 @@ class WebSocket extends _EventTarget {
     else if (data.byteLength) {
       dataSize += data.byteLength * (data.BYTES_PER_ELEMENT || 1)
     }
-    // Other type. Invoke its toString method then use the 'length' property
+    // Other type. ('' + data).length
     else {
-      // Not sure what will be sent yet. Need to be tested on server side.
-      //test
-      dataSize += ((data.toString && data.toString().length) || (data === null && 4) || (data === undefined && 9))
+      dataToBeSent = '' + data
+      dataSize += dataToBeSent.length
     }
     this._bufferedAmount += dataSize
     const settings = mockSocketSettings[this._index]
@@ -66,7 +80,7 @@ class WebSocket extends _EventTarget {
     setTimeout(() => {
       settings.map((setting) => {
         const receiver = setting.receiver
-        receiver && receiver.call(setting, data)
+        receiver && receiver.call(setting, dataToBeSent)
         this._bufferedAmount -= dataSize
       })
     }, waitingTime)
@@ -93,9 +107,9 @@ class WebSocket extends _EventTarget {
     // window.WebSocket fields
     this.binaryType = 'blob'
     // bufferedAmount: UTF-8 text or binary data
-    // For those data that is not a string or binary data, its `toString` method will be called then return the length.
-    // Example: ws.send({ a: 1 }), bufferedAmount = ({ a: 1 }).toString().length => "[object Object]".length => 15
-    // [1, 2, 3] => [1, 2, 3].toString().length => "1,2,3".length => 5
+    // For those data that is not a string or binary data, use ('' + data) instead.
+    // Example: ws.send({ a: 1 }), bufferedAmount = ('' + { a: 1 }).length => "[object Object]".length => 15
+    // [1, 2, 3] => ('' + [1, 2, 3]).length => "1,2,3".length => 5
     // See https://html.spec.whatwg.org/multipage/web-sockets.html#dom-websocket-bufferedamount
     // And https://github.com/chromium/chromium/blob/0aee4434a4dba42a42abaea9bfbc0cd196a63bc1/third_party/blink/renderer/modules/websockets/dom_web_socket.cc#L416
     // An implementation https://github.com/theturtle32/WebSocket-Node/blob/1037571aee32edd0c9008bda57cbf4c0d55fad36/lib/W3CWebSocket.js#L109
