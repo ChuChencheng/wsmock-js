@@ -81,6 +81,10 @@ class WebSocket extends _EventTarget {
       settings.map((setting) => {
         const receiver = setting.receiver
         receiver && receiver.call(setting, dataToBeSent)
+        _eventBus.dispatchEvent({
+          type: '_receive',
+          url: setting.url,
+        })
         this._bufferedAmount = 0
       })
     }, waitingTime)

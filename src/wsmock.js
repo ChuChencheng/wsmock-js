@@ -6,18 +6,17 @@
 
 /**
  * Mock settings template
- * const wsm = require('wsmock')
- * wsm.mock({
+ * import WsMock from 'WsMock'
+ * WsMock.mock({
  *    url: 'ws://some.mock.url',
+ *    sendInterval: 'onreceive',  // A number, an array or a string.
  *    receiver (data) {},
  *    sender () {
  *      // Write your mock data
  *      this.response = {
  *        success: true,
  *        msg: null,
- *        data: {
- *          text: 'A msg from mock WebSocket!',
- *        },
+ *        data: 'A msg from mock WebSocket!',
  *      }
  *    },
  * })
@@ -80,7 +79,10 @@ const _attachSender = (settings) => {
       settings._timeoutId = setTimeout(execTimeout, settings.sendInterval[timeoutIndex])
     }
   } else if (settings.sendInterval === 'onreceive') {
-    
+    _eventBus.addEventListener('_receive', (event) => {
+      if (!event.url !== settings.url) return
+      execSender()
+    })
   }
 }
 
