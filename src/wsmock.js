@@ -48,21 +48,39 @@ const _storeMock = (settings) => {
 }
 
 const _attachSender = (settings) => {
+  const execSender = () => {
+    settings.sender.call(settings)
+    if (!settings.response) {
+      console.warn(`Please specify response data for url '${settings.url}'.`)
+      return
+    }
+    _eventBus.dispatchEvent({
+      type: '_message',
+      url: settings.url,
+      messageEventDict: {
+        data: settings.response,
+      },
+    })
+  }
   if (typeof settings.sendInterval === 'number') {
-    settings._intervalId = setInterval(() => {
-      settings.sender.call(settings)
-      if (!settings.response) {
-        console.warn(`Please specify response data for url '${settings.url}'.`)
-        return
+    settings._intervalId = setInterval(execSender, settings.sendInterval)
+  } else if (Array.isArray(settings.sendInterval)) {
+    let timeoutIndex = 0
+    settings.sendInterval = settings.sendInterval.filter((time) => {
+      return typeof time === 'number'
+    })
+    const len = settings.sendInterval.length
+    if (len) {
+      const execTimeout = () => {
+        execSender()
+        timeoutIndex++
+        if (timeoutIndex === len) timeoutIndex = 0
+        settings._timeoutId = setTimeout(execTimeout, settings.sendInterval[timeoutIndex])
       }
-      _eventBus.dispatchEvent({
-        type: '_message',
-        url: settings.url,
-        messageEventDict: {
-          data: settings.response,
-        },
-      })
-    }, settings.sendInterval)
+      settings._timeoutId = setTimeout(execTimeout, settings.sendInterval[timeoutIndex])
+    }
+  } else if (settings.sendInterval === 'onreceive') {
+    
   }
 }
 
@@ -87,8 +105,6 @@ WsMock.settings = {
   CLOSING_TIME: 100,
   // Bytes per second
   SEND_RATE: 1 * 1024 * 1024,
-  // Default: 300ms to finish sending
-  TOTAL_BUFFER_SIZE: (1 * 1024 * 1024 / 1000) * 300,
 }
 
 window.WebSocket = WebSocket

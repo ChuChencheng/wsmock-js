@@ -76,12 +76,12 @@ class WebSocket extends _EventTarget {
     }
     this._bufferedAmount += dataSize
     const settings = mockSocketSettings[this._index]
-    const waitingTime = (WsMock.settings.TOTAL_BUFFER_SIZE / WsMock.settings.SEND_RATE) * 1000
+    const waitingTime = (this.bufferedAmount / WsMock.settings.SEND_RATE) * 1000
     setTimeout(() => {
       settings.map((setting) => {
         const receiver = setting.receiver
         receiver && receiver.call(setting, dataToBeSent)
-        this._bufferedAmount -= dataSize
+        this._bufferedAmount = 0
       })
     }, waitingTime)
   }
@@ -98,7 +98,7 @@ class WebSocket extends _EventTarget {
     setTimeout(() => {
       this._closeEventDict.code = code
       reason && (this._closeEventDict.reason = reason)
-      this.removeAllListeners('message')
+      this.removeAllListeners()
       this._readyState = WebSocket.CLOSED
     }, WsMock.settings.CLOSING_TIME)
   }

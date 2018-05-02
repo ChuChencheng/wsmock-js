@@ -47,9 +47,8 @@ class _EventTarget {
     stack[index] = newHandler
   }
 
-  removeAllListeners (type) {
-    if (!(type in this.listeners)) return
-    this.listeners[type] = []
+  removeAllListeners () {
+    this.listeners = {}
   }
 }
 
