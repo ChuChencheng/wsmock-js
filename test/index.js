@@ -6,8 +6,9 @@ let ws
 const open = () => {
   ws = new WebSocket(mockUrl)
 
-  ws.onopen = () => {
+  ws.onopen = (event) => {
     console.log('%cWebSocket connection opened.', 'color: red;')
+    console.dir(event)
   }
 
   ws.onmessage = (event) => {
@@ -16,8 +17,9 @@ const open = () => {
     console.log('%c------On message end------', 'color: green;')
   }
 
-  ws.onclose = () => {
+  ws.onclose = (event) => {
     console.log('%cWebSocket connection closed.', 'color: red;')
+    console.dir(event)
   }
 }
 

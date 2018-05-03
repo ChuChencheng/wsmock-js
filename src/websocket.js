@@ -26,6 +26,11 @@ class WebSocket extends _EventTarget {
         this._url = url
         this._protocol = protocols
         
+        this._closeEventDict = {
+          code: 1000,
+          reason: `Connection of mock WebSocket with url '${this.url}' is closed because you are so ugly.`,
+          wasClean: true,
+        }
         this._index = i
         this._attachEvents()
         setTimeout(() => {
@@ -102,8 +107,8 @@ class WebSocket extends _EventTarget {
     setTimeout(() => {
       this._closeEventDict.code = code
       reason && (this._closeEventDict.reason = reason)
-      this.removeAllListeners()
       this._readyState = WebSocket.CLOSED
+      this.removeAllListeners()
     }, WsMock.settings.CLOSING_TIME)
   }
 
@@ -136,11 +141,6 @@ class WebSocket extends _EventTarget {
   
     // Custom fields
     this._index = -1
-    this._closeEventDict = {
-      code: 1000,
-      reason: `Connection of mock WebSocket with url '${this.url}' is closed because you are so ugly.`,
-      wasClean: true,
-    }
   }
 
   _attachEvents () {
@@ -149,13 +149,13 @@ class WebSocket extends _EventTarget {
 
   _dispatchMessageEvent (event) {
     if (event.url !== this.url) return
-    this.dispatchEvent(new MessageEvent('message', Object.assign({
+    this.dispatchEvent(this._defineEventProps(new MessageEvent('message', Object.assign({
       data: null,
-      origin: '',
+      origin: this.url,
       lastEventId: '',
       source: null,
       ports: [],
-    }, event.messageEventDict)))
+    }, event.messageEventDict))))
   }
 
   _observeProps () {
@@ -224,14 +224,14 @@ class WebSocket extends _EventTarget {
     this._observeReadOnlyProps('readyState', WebSocket.CONNECTING, (val) => {
       switch (val) {
         case WebSocket.OPEN:
-          this.dispatchEvent(new CustomEvent('open'))
+          this.dispatchEvent(this._defineEventProps(new Event('open')))
           break
         case WebSocket.CLOSED:
-          this.dispatchEvent(new CloseEvent('close', {
+          this.dispatchEvent(this._defineEventProps(new CloseEvent('close', {
             code: this._closeEventDict.code,
             reason: this._closeEventDict.reason,
             wasClean: this._closeEventDict.wasClean
-          }))
+          })))
           break
         default:
           break
@@ -263,6 +263,18 @@ class WebSocket extends _EventTarget {
       },
     })
     this[`_${propName}`] = defaultValue
+  }
+
+  _defineEventProps (event) {
+    const props = ['srcElement', 'currentTarget', 'target']
+    props.map((prop) => {
+      Object.defineProperty(event, prop, {
+        value: this,
+        configurable: true,
+        enumerable: true,
+      })
+    })
+    return event
   }
 }
 

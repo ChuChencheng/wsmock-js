@@ -11,5 +11,6 @@ Run `npm start` to view demo. Open the console and click the buttons on the page
 * Mock settings data type validation
 * Url validation?
 * Test module
+* Socket.io support?
 
 **Incomplete.**
