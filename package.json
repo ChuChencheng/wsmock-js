@@ -9,13 +9,16 @@
     "dev": "webpack --config webpack.dev.conf.js",
     "start": "webpack-dev-server --open --config webpack.dev.conf.js"
   },
-  "dependencies": {},
+  "dependencies": {
+    "whatwg-url": "^6.4.1"
+  },
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",
     "babel-preset-env": "^1.6.1",
     "html-webpack-plugin": "^3.2.0",
     "webpack": "^4.6.0",
+    "webpack-bundle-analyzer": "^2.11.1",
     "webpack-cli": "^2.0.15",
     "webpack-dev-server": "^3.1.3"
   }

@@ -4,6 +4,7 @@
  * WebSocket.cpp  -https://github.com/WebKit/webkit/blob/5ba65e3c7d14bc3230381f786534e50bb5f3c593/Source/WebCore/Modules/websockets/WebSocket.cpp
  */
 
+import { procSentData, isValidUrl } from './utils'
 import _EventTarget from './event-target'
 import _eventBus from './event-bus'
 import WsMock from './wsmock'
@@ -21,6 +22,11 @@ class WebSocket extends _EventTarget {
     super()
     for (let i = 0; i < mockSocketUrls.length; i++) {
       if (mockSocketUrls[i] === url) {
+        const urlValidationResult = isValidUrl(url)
+        if (typeof urlValidationResult === 'string') {
+          throw new DOMException(`Failed to construct 'WebSocket': ${urlValidationResult}`)
+          return undefined
+        }
         this._defineFields()
         this._observeProps()
         this._url = url
@@ -55,30 +61,9 @@ class WebSocket extends _EventTarget {
       console.error('WebSocket is already in CLOSING or CLOSED state.')
       return
     }
-    let dataSize = 0
-    let dataToBeSent = data
-    // Data type confirm
-    // String.
-    if (typeof data === 'string' || data instanceof String) {
-      dataSize += data.length
-    }
-    // ArrayBuffer. Use arrayBuffer.byteLength
-    else if (data instanceof ArrayBuffer) {
-      dataSize += data.byteLength
-    }
-    // Blob. Use blob.size
-    else if (data instanceof Blob) {
-      dataSize += data.size
-    }
-    // ArrayBufferView/TypedArray. Judge if has byteLength and BYTES_PER_ELEMENT
-    else if (data.byteLength) {
-      dataSize += data.byteLength * (data.BYTES_PER_ELEMENT || 1)
-    }
-    // Other type. ('' + data).length
-    else {
-      dataToBeSent = '' + data
-      dataSize += dataToBeSent.length
-    }
+    const validData = procSentData(data)
+    const dataSize = validData.dataSize
+    const dataToBeSent = validData.dataToBeSent
     this._bufferedAmount += dataSize
     const settings = mockSocketSettings[this._index]
     const waitingTime = (this.bufferedAmount / WsMock.settings.SEND_RATE) * 1000

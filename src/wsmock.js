@@ -13,11 +13,7 @@
  *    receiver (data) {},
  *    sender () {
  *      // Write your mock data
- *      this.response = {
- *        success: true,
- *        msg: null,
- *        data: 'A msg from mock WebSocket!',
- *      }
+ *      this.response = 'A msg from mock WebSocket!'
  *    },
  * })
  */
@@ -26,6 +22,7 @@ if (!window.WebSocket) {
   throw new Error('Your browser does not support WebSocket.')
 }
 
+import { procSentData } from './utils'
 import _eventBus from './event-bus'
 import { mockSocketUrls, mockSocketSettings } from './mock-store'
 import WebSocket from './websocket'
@@ -53,11 +50,12 @@ const _attachSender = (settings) => {
       console.warn(`Please specify response data for url '${settings.url}'.`)
       return
     }
+    const validData = procSentData(settings.response)
     _eventBus.dispatchEvent({
       type: '_message',
       url: settings.url,
       messageEventDict: {
-        data: settings.response,
+        data: validData.dataToBeSent,
       },
     })
   }

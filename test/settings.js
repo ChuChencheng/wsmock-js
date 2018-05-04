@@ -11,13 +11,7 @@ export const settings = (wsm) => {
     },
     sender () {
       // Write your mock data
-      this.response = {
-        success: true,
-        msg: null,
-        data: {
-          text: 'A msg from mock WebSocket!',
-        },
-      }
+      this.response = 'A msg from mock WebSocket!'
     },
   })
 }

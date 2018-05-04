@@ -8,9 +8,14 @@ Run `npm start` to view demo. Open the console and click the buttons on the page
 
 # Todo
 
-* Mock settings data type validation
-* Url validation?
-* Test module
-* Socket.io support?
+* [x] Mock settings data type validation
+* [x] Url validation?
+* [ ] Test module (mocha)
+* [ ] Socket.io support?
+
+# Problems
+
+* Bundle size too large if use 'whatwg-url' module. Use native URL instead.
+* Minify.
 
 **Incomplete.**
