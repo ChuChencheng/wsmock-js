@@ -1,4 +1,7 @@
 # wsmock-js
+
+[![Build Status](https://travis-ci.org/ChuChencheng/wsmock-js.svg?branch=master)](https://travis-ci.org/ChuChencheng/wsmock-js)
+
 Mock WebSocket in the browser without a server.
 
 # Basic
