@@ -10,7 +10,7 @@ Run `npm start` to view demo. Open the console and click the buttons on the page
 
 * [x] Mock settings data type validation
 * [x] Url validation?
-* [ ] Test module (mocha)
+* [x] Test module (mocha)
 * [ ] Socket.io support?
 
 # Problems
