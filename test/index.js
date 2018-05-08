@@ -6,6 +6,8 @@ let ws
 const open = () => {
   ws = new WebSocket(mockUrl)
 
+  window.ws = ws
+
   ws.onopen = (event) => {
     console.log('%cWebSocket connection opened.', 'color: red;')
     console.dir(event)
@@ -29,6 +31,14 @@ const send = () => {
   console.log(`%cBufferedAnoumt of this message sent: ${ws.bufferedAmount}`, 'color: blue;')
 }
 
+const change = () => {
+  if (!ws) return
+  ws.onmessage = () => {
+    console.log('New onmessage handler')
+  }
+  console.log('Onmessage handler changed.')
+}
+
 const close = () => {
   if (!ws) return
   ws.close()
@@ -36,4 +46,5 @@ const close = () => {
 
 document.querySelector('#open').addEventListener('click', open)
 document.querySelector('#send').addEventListener('click', send)
+document.querySelector('#change').addEventListener('click', change)
 document.querySelector('#close').addEventListener('click', close)

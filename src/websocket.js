@@ -25,7 +25,7 @@ class WebSocket extends _EventTarget {
         const urlValidationResult = isValidUrl(url)
         if (typeof urlValidationResult === 'string') {
           throw new DOMException(`Failed to construct 'WebSocket': ${urlValidationResult}`)
-          return undefined
+          return
         }
         this._defineFields()
         this._observeProps()
@@ -74,6 +74,7 @@ class WebSocket extends _EventTarget {
         _eventBus.dispatchEvent({
           type: '_receive',
           url: setting.url,
+          _id: setting._id,
         })
         this._bufferedAmount = 0
       })
@@ -200,6 +201,7 @@ class WebSocket extends _EventTarget {
           } else {
             this.modifyHandler(event, eventIndex, val)
           }
+          handler = val
         },
       })
     })
@@ -271,5 +273,7 @@ WebSocket.CLOSING = 2
 WebSocket.prototype.CLOSING = WebSocket.CLOSING
 WebSocket.CLOSED = 3
 WebSocket.prototype.CLOSED = WebSocket.CLOSED
+
+WebSocket._nativeWebSocket = _WebSocket
 
 export default WebSocket

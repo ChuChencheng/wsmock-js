@@ -78,7 +78,7 @@ const _attachSender = (settings) => {
     }
   } else if (settings.sendInterval === 'onreceive') {
     _eventBus.addEventListener('_receive', (event) => {
-      if (!event.url !== settings.url) return
+      if (event.url !== settings.url || event._id !== settings._id) return
       execSender()
     })
   }
@@ -95,6 +95,7 @@ class WsMock {
       console.error('Url must be specified.')
       return
     }
+    settings._id = new Date().getTime()
     _storeMock(settings)
     _attachSender(settings)
   }

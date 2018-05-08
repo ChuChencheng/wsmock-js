@@ -40,7 +40,7 @@ class _EventTarget {
   }
 
   modifyHandler (type, index, newHandler) {
-    if (!(type in this.listeners) || !(typeof index !== 'number')) {
+    if (!(type in this.listeners) || (typeof index !== 'number')) {
       return
     }
     const stack = this.listeners[type]

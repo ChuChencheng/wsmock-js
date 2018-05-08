@@ -5,7 +5,7 @@ export const procSentData = (data) => {
   let dataToBeSent = data
   // Data type confirm
   // String.
-  if (typeof data === 'string' || data instanceof String) {
+  if (typeof data === 'string') {
     dataSize += data.length
   }
   // ArrayBuffer. Use arrayBuffer.byteLength
