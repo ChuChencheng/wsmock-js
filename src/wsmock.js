@@ -84,6 +84,8 @@ const _attachSender = (settings) => {
   }
 }
 
+let _id = 0
+
 // Class to be exported
 class WsMock {
   static config (opt) {
@@ -95,7 +97,7 @@ class WsMock {
       console.error('Url must be specified.')
       return
     }
-    settings._id = new Date().getTime()
+    settings._id = _id++
     _storeMock(settings)
     _attachSender(settings)
   }

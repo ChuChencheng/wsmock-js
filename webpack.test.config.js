@@ -7,14 +7,14 @@ module.exports = function (env, argv) {
     mode: 'development',
     devtool: 'inline-source-map',
     entry: {
-      main: './src/wsmock.js',
+      WsMock: './src/wsmock.js',
       index: './test/index.js',
       settings: './test/settings.js',
     },
     output: {
       filename: '[name].js',
       path: path.resolve(__dirname, 'dev'),
-      library: 'WsMock',
+      library: ['[name]'],
       libraryTarget: 'umd',
       libraryExport: 'default',
     },

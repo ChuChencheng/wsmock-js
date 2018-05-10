@@ -1,12 +1,16 @@
 const path = require('path')
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
 
 module.exports = function (env, argv) {
   return {
     mode: 'production',
-    entry: './src/wsmock.js',
+    entry: {
+      'wsmock': './src/wsmock.js',
+      'wsmock.min': './src/wsmock.js',
+    },
     output: {
-      filename: 'wsmock.js',
+      filename: '[name].js',
       path: path.resolve(__dirname, 'dist'),
       library: 'WsMock',
       libraryTarget: 'umd',
@@ -21,8 +25,15 @@ module.exports = function (env, argv) {
         }
       ]
     },
+    optimization: {
+      minimizer: [
+        new UglifyJsPlugin({
+          include: /\.min\.js$/,
+        })
+      ]
+    },
     plugins: [
-      new BundleAnalyzerPlugin(),
+      new CleanWebpackPlugin(['dist']),
     ],
   }
 }
