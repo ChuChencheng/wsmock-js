@@ -209,8 +209,6 @@ exports.default = _eventBus;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-// import { URL } from 'whatwg-url'
-
 var procSentData = exports.procSentData = function procSentData(data) {
   var dataSize = 0;
   var dataToBeSent = data;
@@ -243,6 +241,11 @@ var procSentData = exports.procSentData = function procSentData(data) {
 };
 
 var isValidUrl = exports.isValidUrl = function isValidUrl(url) {
+  // If URL API does not exist, just check if url was a string type and not empty.
+  // Other polyfill modules would make this module size too huge and url validation is not quite necessary.
+  if (typeof URL !== 'function') {
+    return typeof url === 'string' && url !== '';
+  }
   var _url = {};
   try {
     _url = new URL(url);

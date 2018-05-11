@@ -1,5 +1,3 @@
-// import { URL } from 'whatwg-url'
-
 export const procSentData = (data) => {
   let dataSize = 0
   let dataToBeSent = data
@@ -32,6 +30,11 @@ export const procSentData = (data) => {
 }
 
 export const isValidUrl = (url) => {
+  // If URL API does not exist, just check if url was a string type and not empty.
+  // Other polyfill modules would make this module size too huge and url validation is not quite necessary.
+  if (typeof URL !== 'function') {
+    return typeof url === 'string' && url !== ''
+  }
   let _url = {}
   try {
     _url = new URL(url)

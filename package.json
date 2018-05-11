@@ -1,7 +1,7 @@
 {
   "name": "wsmock-js",
   "version": "1.0.0",
-  "main": "./dist/wsmock.min.js",
+  "main": "./dist/wsmock.js",
   "author": "ccc",
   "license": "MIT",
   "scripts": {
@@ -10,9 +10,7 @@
     "start": "webpack-dev-server --open --config webpack.test.config.js",
     "prepublish": "npm run build"
   },
-  "dependencies": {
-    "whatwg-url": "^6.4.1"
-  },
+  "dependencies": {},
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",
