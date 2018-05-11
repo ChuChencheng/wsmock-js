@@ -1,6 +1,7 @@
 {
   "name": "wsmock-js",
   "version": "1.0.0",
+  "description": "Mock WebSocket in the browser without a server.",
   "main": "./dist/wsmock.js",
   "author": "ccc",
   "license": "MIT",
@@ -10,6 +11,14 @@
     "start": "webpack-dev-server --open --config webpack.test.config.js",
     "prepublish": "npm run build"
   },
+  "repository": {
+    "url": "git@github.com:ChuChencheng/wsmock-js.git",
+    "type": "git"
+  },
+  "keywords": [
+    "websocket",
+    "mock"
+  ],
   "dependencies": {},
   "devDependencies": {
     "babel-core": "^6.26.3",
