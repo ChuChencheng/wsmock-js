@@ -22,4 +22,13 @@ export const settings = (wsm) => {
     sender () {
     },
   })
+  wsm.mock({
+    url: /ws\:\/\/some\.(reg|exp)\.url/,
+    sendInterval: 'onreceive',
+    receiver (data) {
+    },
+    sender () {
+      this.response = 'RegExp url'
+    },
+  })
 }

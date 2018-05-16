@@ -33,24 +33,52 @@ wsm.mock({
 })
 ```
 
-## API
+Then just use WebSocket as usual.
 
-* `wsm.mock(options)`
-  * Add a new mock setting.
-  * `options`: [Object] Mock setting options.
-    * `url`: [String] Mock url. Note: Url validation will not proceed if WHATWG URL API is not supported by browser (e.g. IE).
-    * `sendInterval`: [Array|Number|String] Define when server would send a message to the browser. 
-      * [Array]: A set of numbers representing interval time.
-      * [Number]: Interval time.
-      * [String]: 'onreceive', server send message imediately once receive data from the browser.
-    * `receiver`: [Function] Simulate receive method invoked by server.
-    * `send`: [Function] Simulate send method invoked by server.
-* `wsm.config(options)`
-  * Global settings of wsmock-js
-  * `options`: [Object]
-    * `CONNECTING_TIME`: [Number] Default: `100`, time cost of connection.
-    * `CLOSING_TIME`: [Number] Default: `100`, time cost of disconnection.
-    * `SEND_RATE`: [Number] Default: `1 * 1024 * 1024`, send rate, bytes per second
+# API
+
+```javascript
+/**
+ * Add a new mock setting.
+ */
+wsm.mock({
+  // [String|RegExp] Mock url. Note: Url validation will not proceed if WHATWG URL API is not supported by browser (e.g. IE).
+  url: /wss:\/\/xxx\.(xxxx|regexp)\.xxx/,
+
+  /** 
+   * [Array|Number|String] Define when server would send a message to the browser. 
+   * [Array]: A set of numbers representing interval time.
+   * [Number]: Interval time.
+   * [String]: 'onreceive', server send message imediately once receive data from the browser.
+   */
+  sendInterval: 1000,
+
+  // [Function] Simulate receive method invoked by server.
+  receiver (data) => {
+    
+  },
+
+  // [Function] Simulate send method invoked by server.
+  // * Note: You'd better not using an arrow function in case that 'this' does not point to setting object.
+  sender () => {
+    this.response = 'This is a message sent by server.'
+  },
+})
+
+/**
+ * Global settings of wsmock-js
+ */
+wsm.config({
+  // [Number] Default: '100', time (ms) cost of connection.
+  CONNECTING_TIME: 100,
+
+  // [Number] Default: '100', time (ms) cost of disconnection.
+  CLOSING_TIME: 100,
+
+  // [Number] Default: '1 * 1024 * 1024', send rate, bytes per second
+  SEND_RATE: 1 * 1024 * 1024,
+})
+```
 
 # Attention
 
@@ -60,6 +88,6 @@ wsm.mock({
 
 # Todo
 
-* [ ] Mock url regular expression support
+* [x] Mock url regular expression support
 * [ ] Socket.io support?
 * [ ] Better test cases

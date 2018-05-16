@@ -346,6 +346,41 @@ describe('Utils test.', () => {
       assert.isString(fn())
     })
   })
+
+  describe('isUrlMatched', () => {
+    it('Both String type.', () => {
+      const url1 = 'abc'
+      const url2 = 'abc'
+      const url3 = 'bcd'
+      assert.equal(utils.isUrlMatched(url1, url2), true, `'isUrlMatched(${url1}, ${url2})' should be true.`)
+      assert.equal(utils.isUrlMatched(url1, url3), false, `'isUrlMatched(${url1}, ${url3})' should be false.`)
+    })
+
+    it('Both RegExp type.', () => {
+      const url1 = /reg/
+      const url2 = /reg/
+      const url3 = /regexp/
+      assert.equal(utils.isUrlMatched(url1, url2), true, `'isUrlMatched(${url1}, ${url2})' should be true.`)
+      assert.equal(utils.isUrlMatched(url1, url3), false, `'isUrlMatched(${url1}, ${url3})' should be false.`)
+    })
+
+    it('RegExp and String.', () => {
+      const url1 = 'abc'
+      const url2 = /abc/
+      const url3 = /d/
+      assert.equal(utils.isUrlMatched(url1, url2), true, `'isUrlMatched(${url1}, ${url2})' should be true.`)
+      assert.equal(utils.isUrlMatched(url2, url1), true, `'isUrlMatched(${url2}, ${url1})' should be true.`)
+      assert.equal(utils.isUrlMatched(url1, url3), false, `'isUrlMatched(${url1}, ${url3})' should be false.`)
+    })
+
+    it('Other types.', () => {
+      const url1 = ['abc']
+      const url2 = {}
+      const url3 = () => {}
+      assert.equal(utils.isUrlMatched(url1, url2), false, `'isUrlMatched(${url1}, ${url2})' should be false.`)
+      assert.equal(utils.isUrlMatched(url1, url3), false, `'isUrlMatched(${url1}, ${url3})' should be false.`)
+    })
+  })
 })
 
 after(() => {

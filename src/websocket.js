@@ -4,7 +4,7 @@
  * WebSocket.cpp  -https://github.com/WebKit/webkit/blob/5ba65e3c7d14bc3230381f786534e50bb5f3c593/Source/WebCore/Modules/websockets/WebSocket.cpp
  */
 
-import { procSentData, isValidUrl } from './utils'
+import { procSentData, isValidUrl, isUrlMatched } from './utils'
 import _EventTarget from './event-target'
 import _eventBus from './event-bus'
 import WsMock from './wsmock'
@@ -21,7 +21,7 @@ class WebSocket extends _EventTarget {
     }
     super()
     for (let i = 0; i < mockSocketUrls.length; i++) {
-      if (mockSocketUrls[i] === url) {
+      if (isUrlMatched(mockSocketUrls[i], url)) {
         const urlValidationResult = isValidUrl(url)
         if (typeof urlValidationResult === 'string') {
           throw new DOMException(`Failed to construct 'WebSocket': ${urlValidationResult}`)
@@ -134,7 +134,7 @@ class WebSocket extends _EventTarget {
   }
 
   _dispatchMessageEvent (event) {
-    if (event.url !== this.url) return
+    if (!isUrlMatched(event.url, this.url)) return
     this.dispatchEvent(this._defineEventProps(new MessageEvent('message', Object.assign({
       data: null,
       origin: this.url,

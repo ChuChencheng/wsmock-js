@@ -4,7 +4,9 @@ settings(WsMock)
 let ws
 
 const open = () => {
-  ws = new WebSocket(mockUrl)
+  const regChecked = document.querySelector('#regexp-checkbox').checked
+  const url = regChecked ? 'ws://some.exp.url' : mockUrl
+  ws = new WebSocket(url)
 
   window.ws = ws
 

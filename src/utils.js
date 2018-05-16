@@ -47,3 +47,16 @@ export const isValidUrl = (url) => {
   }
   return true
 }
+
+export const isUrlMatched = (url1, url2) => {
+  if ((typeof url1 === typeof url2) && (typeof url1 === 'string')) {  // If both string.
+    return url1 === url2
+  } else if ((url1 instanceof RegExp) && (url2 instanceof RegExp)) {
+    return url1.toString() === url2.toString()
+  } else {
+    let str
+    const reg = (url1 instanceof RegExp) ? (str = url2, url1) : (url2 instanceof RegExp ? (str = url1, url2) : undefined)
+    if (reg === undefined) return false
+    return reg.test(str)
+  }
+}

@@ -209,6 +209,9 @@ exports.default = _eventBus;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var procSentData = exports.procSentData = function procSentData(data) {
   var dataSize = 0;
   var dataToBeSent = data;
@@ -257,6 +260,20 @@ var isValidUrl = exports.isValidUrl = function isValidUrl(url) {
     return 'The URL\'s scheme must be either \'ws\' or \'wss\'. \'' + _protocol.slice(0, -1) + '\' is not allowed.';
   }
   return true;
+};
+
+var isUrlMatched = exports.isUrlMatched = function isUrlMatched(url1, url2) {
+  if ((typeof url1 === 'undefined' ? 'undefined' : _typeof(url1)) === (typeof url2 === 'undefined' ? 'undefined' : _typeof(url2)) && typeof url1 === 'string') {
+    // If both string.
+    return url1 === url2;
+  } else if (url1 instanceof RegExp && url2 instanceof RegExp) {
+    return url1.toString() === url2.toString();
+  } else {
+    var str = void 0;
+    var reg = url1 instanceof RegExp ? (str = url2, url1) : url2 instanceof RegExp ? (str = url1, url2) : undefined;
+    if (reg === undefined) return false;
+    return reg.test(str);
+  }
 };
 
 /***/ }),
@@ -313,7 +330,7 @@ if (!window.WebSocket) {
 var _storeMock = function _storeMock(settings) {
   var existIndex = -1;
   if (_mockStore.mockSocketUrls.some(function (url, index) {
-    if (url === settings.url) {
+    if ((0, _utils.isUrlMatched)(url, settings.url)) {
       existIndex = index;
       return true;
     }
@@ -361,7 +378,7 @@ var _attachSender = function _attachSender(settings) {
     }
   } else if (settings.sendInterval === 'onreceive') {
     _eventBus3.default.addEventListener('_receive', function (event) {
-      if (event.url !== settings.url || event._id !== settings._id) return;
+      if (!(0, _utils.isUrlMatched)(event.url, settings.url) || event._id !== settings._id) return;
       execSender();
     });
   }
@@ -468,7 +485,7 @@ var WebSocket = function (_EventTarget2) {
     var _this = _possibleConstructorReturn(this, (WebSocket.__proto__ || Object.getPrototypeOf(WebSocket)).call(this));
 
     for (var i = 0; i < _mockStore.mockSocketUrls.length; i++) {
-      if (_mockStore.mockSocketUrls[i] === url) {
+      if ((0, _utils.isUrlMatched)(_mockStore.mockSocketUrls[i], url)) {
         var urlValidationResult = (0, _utils.isValidUrl)(url);
         if (typeof urlValidationResult === 'string') {
           throw new DOMException('Failed to construct \'WebSocket\': ' + urlValidationResult);
@@ -594,7 +611,7 @@ var WebSocket = function (_EventTarget2) {
   }, {
     key: '_dispatchMessageEvent',
     value: function _dispatchMessageEvent(event) {
-      if (event.url !== this.url) return;
+      if (!(0, _utils.isUrlMatched)(event.url, this.url)) return;
       this.dispatchEvent(this._defineEventProps(new MessageEvent('message', Object.assign({
         data: null,
         origin: this.url,

@@ -22,7 +22,7 @@ if (!window.WebSocket) {
   throw new Error('Your browser does not support WebSocket.')
 }
 
-import { procSentData } from './utils'
+import { procSentData, isUrlMatched } from './utils'
 import _eventBus from './event-bus'
 import { mockSocketUrls, mockSocketSettings } from './mock-store'
 import WebSocket from './websocket'
@@ -30,7 +30,7 @@ import WebSocket from './websocket'
 const _storeMock = (settings) => {
   let existIndex = -1
   if (mockSocketUrls.some((url, index) => {
-    if (url === settings.url) {
+    if (isUrlMatched(url, settings.url)) {
       existIndex = index
       return true
     }
@@ -78,7 +78,7 @@ const _attachSender = (settings) => {
     }
   } else if (settings.sendInterval === 'onreceive') {
     _eventBus.addEventListener('_receive', (event) => {
-      if (event.url !== settings.url || event._id !== settings._id) return
+      if (!isUrlMatched(event.url, settings.url) || event._id !== settings._id) return
       execSender()
     })
   }
