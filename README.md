@@ -1,5 +1,6 @@
 # wsmock-js
 
+[![npm](https://img.shields.io/npm/v/wsmock-js.svg)](https://www.npmjs.com/package/wsmock-js)
 [![Build Status](https://travis-ci.org/ChuChencheng/wsmock-js.svg?branch=master)](https://travis-ci.org/ChuChencheng/wsmock-js)
 
 Mock WebSocket in the browser without a server.

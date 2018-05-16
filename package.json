@@ -11,6 +11,10 @@
     "start": "webpack-dev-server --open --config webpack.test.config.js",
     "prepublish": "npm run build"
   },
+  "homepage": "https://github.com/ChuChencheng/wsmock-js",
+  "bugs": {
+    "url": "https://github.com/ChuChencheng/wsmock-js/issues"
+  },
   "repository": {
     "url": "https://github.com/ChuChencheng/wsmock-js.git",
     "type": "git"
