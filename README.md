@@ -59,7 +59,7 @@ wsm.mock({
   },
 
   // [Function] Simulate send method invoked by server.
-  // * Note: You'd better not using an arrow function in case that 'this' does not point to setting object.
+  // * Note: You'd better not use an arrow function in case that 'this' does not point to setting object.
   sender () => {
     this.response = 'This is a message sent by server.'
   },
