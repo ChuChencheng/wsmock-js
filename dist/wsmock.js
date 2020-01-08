@@ -46,17 +46,32 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, {
-/******/ 				configurable: false,
-/******/ 				enumerable: true,
-/******/ 				get: getter
-/******/ 			});
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
 /******/ 		}
 /******/ 	};
 /******/
 /******/ 	// define __esModule on exports
 /******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
 /******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
 /******/ 	};
 /******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
@@ -76,7 +91,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -89,213 +104,16 @@ return /******/ (function(modules) { // webpackBootstrap
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-/**
- * Stores urls and settings of mock rules.
- */
-var mockSocketUrls = exports.mockSocketUrls = [];
-var mockSocketSettings = exports.mockSocketSettings = [];
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-/**
- * Simple event dispatching system
- * See https://developer.mozilla.org/en-US/docs/Web/API/EventTarget#Example
- */
-var _EventTarget = function () {
-  function _EventTarget() {
-    _classCallCheck(this, _EventTarget);
-
-    this.listeners = {};
-  }
-
-  _createClass(_EventTarget, [{
-    key: 'addEventListener',
-    value: function addEventListener(type, callback) {
-      if (!(type in this.listeners)) {
-        this.listeners[type] = [];
-      }
-      var stack = this.listeners[type];
-      stack.push(callback);
-      // Return index
-      return stack.length - 1;
-    }
-  }, {
-    key: 'removeEventListener',
-    value: function removeEventListener(type, callback) {
-      if (!(type in this.listeners)) return;
-      var stack = this.listeners[type];
-      for (var i = 0, l = stack.length; i < l; i++) {
-        if (stack[i] === callback) {
-          stack.splice(i, 1);
-          return;
-        }
-      }
-    }
-  }, {
-    key: 'dispatchEvent',
-    value: function dispatchEvent(event) {
-      if (!(event.type in this.listeners)) {
-        return true;
-      }
-      var stack = this.listeners[event.type];
-      for (var i = 0, l = stack.length; i < l; i++) {
-        stack[i].call(this, event);
-      }
-      return !event.defaultPrevented;
-    }
-  }, {
-    key: 'modifyHandler',
-    value: function modifyHandler(type, index, newHandler) {
-      if (!(type in this.listeners) || typeof index !== 'number') {
-        return;
-      }
-      var stack = this.listeners[type];
-      stack[index] = newHandler;
-    }
-  }, {
-    key: 'removeAllListeners',
-    value: function removeAllListeners() {
-      this.listeners = {};
-    }
-  }]);
-
-  return _EventTarget;
-}();
-
-exports.default = _EventTarget;
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _eventTarget = __webpack_require__(1);
-
-var _eventTarget2 = _interopRequireDefault(_eventTarget);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var _eventBus = new _eventTarget2.default(); /**
-                                              * Event bus.
-                                              */
-exports.default = _eventBus;
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var procSentData = exports.procSentData = function procSentData(data) {
-  var dataSize = 0;
-  var dataToBeSent = data;
-  // Data type confirm
-  // String.
-  if (typeof data === 'string') {
-    dataSize += data.length;
-  }
-  // ArrayBuffer. Use arrayBuffer.byteLength
-  else if (data instanceof ArrayBuffer) {
-      dataSize += data.byteLength;
-    }
-    // Blob. Use blob.size
-    else if (data instanceof Blob) {
-        dataSize += data.size;
-      }
-      // ArrayBufferView/TypedArray. Judge if has byteLength and BYTES_PER_ELEMENT
-      else if (data.byteLength) {
-          dataSize += data.byteLength * (data.BYTES_PER_ELEMENT || 1);
-        }
-        // Other type. ('' + data).length
-        else {
-            dataToBeSent = '' + data;
-            dataSize += dataToBeSent.length;
-          }
-  return {
-    dataToBeSent: dataToBeSent,
-    dataSize: dataSize
-  };
-};
-
-var isValidUrl = exports.isValidUrl = function isValidUrl(url) {
-  // If URL API does not exist, just check if url was a string type and not empty.
-  // Other polyfill modules would make this module size too huge and url validation is not quite necessary.
-  if (typeof URL !== 'function') {
-    return typeof url === 'string' && url !== '';
-  }
-  var _url = {};
-  try {
-    _url = new URL(url);
-  } catch (error) {
-    return 'The URL \'' + url + '\' is invalid.';
-  }
-  var _protocol = _url.protocol;
-  if (_protocol !== 'ws:' && _protocol !== 'wss:') {
-    return 'The URL\'s scheme must be either \'ws\' or \'wss\'. \'' + _protocol.slice(0, -1) + '\' is not allowed.';
-  }
-  return true;
-};
-
-var isUrlMatched = exports.isUrlMatched = function isUrlMatched(url1, url2) {
-  if ((typeof url1 === 'undefined' ? 'undefined' : _typeof(url1)) === (typeof url2 === 'undefined' ? 'undefined' : _typeof(url2)) && typeof url1 === 'string') {
-    // If both string.
-    return url1 === url2;
-  } else if (url1 instanceof RegExp && url2 instanceof RegExp) {
-    return url1.toString() === url2.toString();
-  } else {
-    var str = void 0;
-    var reg = url1 instanceof RegExp ? (str = url2, url1) : url2 instanceof RegExp ? (str = url1, url2) : undefined;
-    if (reg === undefined) return false;
-    return reg.test(str);
-  }
-};
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(1);
 
 var _eventBus2 = __webpack_require__(2);
 
 var _eventBus3 = _interopRequireDefault(_eventBus2);
 
-var _mockStore = __webpack_require__(0);
+var _mockStore = __webpack_require__(4);
 
 var _websocket = __webpack_require__(5);
 
@@ -425,6 +243,203 @@ window.WebSocket = _websocket2.default;
 exports.default = WsMock;
 
 /***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var procSentData = exports.procSentData = function procSentData(data) {
+  var dataSize = 0;
+  var dataToBeSent = data;
+  // Data type confirm
+  // String.
+  if (typeof data === 'string') {
+    dataSize += data.length;
+  }
+  // ArrayBuffer. Use arrayBuffer.byteLength
+  else if (data instanceof ArrayBuffer) {
+      dataSize += data.byteLength;
+    }
+    // Blob. Use blob.size
+    else if (data instanceof Blob) {
+        dataSize += data.size;
+      }
+      // ArrayBufferView/TypedArray. Judge if has byteLength and BYTES_PER_ELEMENT
+      else if (data.byteLength) {
+          dataSize += data.byteLength * (data.BYTES_PER_ELEMENT || 1);
+        }
+        // Other type. ('' + data).length
+        else {
+            dataToBeSent = '' + data;
+            dataSize += dataToBeSent.length;
+          }
+  return {
+    dataToBeSent: dataToBeSent,
+    dataSize: dataSize
+  };
+};
+
+var isValidUrl = exports.isValidUrl = function isValidUrl(url) {
+  // If URL API does not exist, just check if url was a string type and not empty.
+  // Other polyfill modules would make this module size too huge and url validation is not quite necessary.
+  if (typeof URL !== 'function') {
+    return typeof url === 'string' && url !== '';
+  }
+  var _url = {};
+  try {
+    _url = new URL(url);
+  } catch (error) {
+    return 'The URL \'' + url + '\' is invalid.';
+  }
+  var _protocol = _url.protocol;
+  if (_protocol !== 'ws:' && _protocol !== 'wss:') {
+    return 'The URL\'s scheme must be either \'ws\' or \'wss\'. \'' + _protocol.slice(0, -1) + '\' is not allowed.';
+  }
+  return true;
+};
+
+var isUrlMatched = exports.isUrlMatched = function isUrlMatched(url1, url2) {
+  if ((typeof url1 === 'undefined' ? 'undefined' : _typeof(url1)) === (typeof url2 === 'undefined' ? 'undefined' : _typeof(url2)) && typeof url1 === 'string') {
+    // If both string.
+    return url1 === url2;
+  } else if (url1 instanceof RegExp && url2 instanceof RegExp) {
+    return url1.toString() === url2.toString();
+  } else {
+    var str = void 0;
+    var reg = url1 instanceof RegExp ? (str = url2, url1) : url2 instanceof RegExp ? (str = url1, url2) : undefined;
+    if (reg === undefined) return false;
+    return reg.test(str);
+  }
+};
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _eventTarget = __webpack_require__(3);
+
+var _eventTarget2 = _interopRequireDefault(_eventTarget);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _eventBus = new _eventTarget2.default(); /**
+                                              * Event bus.
+                                              */
+exports.default = _eventBus;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * Simple event dispatching system
+ * See https://developer.mozilla.org/en-US/docs/Web/API/EventTarget#Example
+ */
+var _EventTarget = function () {
+  function _EventTarget() {
+    _classCallCheck(this, _EventTarget);
+
+    this.listeners = {};
+  }
+
+  _createClass(_EventTarget, [{
+    key: 'addEventListener',
+    value: function addEventListener(type, callback) {
+      if (!(type in this.listeners)) {
+        this.listeners[type] = [];
+      }
+      var stack = this.listeners[type];
+      stack.push(callback);
+      // Return index
+      return stack.length - 1;
+    }
+  }, {
+    key: 'removeEventListener',
+    value: function removeEventListener(type, callback) {
+      if (!(type in this.listeners)) return;
+      var stack = this.listeners[type];
+      for (var i = 0, l = stack.length; i < l; i++) {
+        if (stack[i] === callback) {
+          stack.splice(i, 1);
+          return;
+        }
+      }
+    }
+  }, {
+    key: 'dispatchEvent',
+    value: function dispatchEvent(event) {
+      if (!(event.type in this.listeners)) {
+        return true;
+      }
+      var stack = this.listeners[event.type];
+      for (var i = 0, l = stack.length; i < l; i++) {
+        stack[i].call(this, event);
+      }
+      return !event.defaultPrevented;
+    }
+  }, {
+    key: 'modifyHandler',
+    value: function modifyHandler(type, index, newHandler) {
+      if (!(type in this.listeners) || typeof index !== 'number') {
+        return;
+      }
+      var stack = this.listeners[type];
+      stack[index] = newHandler;
+    }
+  }, {
+    key: 'removeAllListeners',
+    value: function removeAllListeners() {
+      this.listeners = {};
+    }
+  }]);
+
+  return _EventTarget;
+}();
+
+exports.default = _EventTarget;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+/**
+ * Stores urls and settings of mock rules.
+ */
+var mockSocketUrls = exports.mockSocketUrls = [];
+var mockSocketSettings = exports.mockSocketSettings = [];
+
+/***/ }),
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -437,9 +452,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(1);
 
-var _eventTarget = __webpack_require__(1);
+var _eventTarget = __webpack_require__(3);
 
 var _eventTarget2 = _interopRequireDefault(_eventTarget);
 
@@ -447,11 +462,11 @@ var _eventBus2 = __webpack_require__(2);
 
 var _eventBus3 = _interopRequireDefault(_eventBus2);
 
-var _wsmock = __webpack_require__(4);
+var _wsmock = __webpack_require__(0);
 
 var _wsmock2 = _interopRequireDefault(_wsmock);
 
-var _mockStore = __webpack_require__(0);
+var _mockStore = __webpack_require__(4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
