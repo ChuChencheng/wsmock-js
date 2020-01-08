@@ -17,7 +17,6 @@ class WebSocket extends _EventTarget {
   constructor (url, protocols) {
     if (arguments.length < 1) {
       throw TypeError(`Failed to construct 'WebSocket': 1 argument required, but only 0 present.`)
-      return
     }
     super()
     for (let i = 0; i < mockSocketUrls.length; i++) {
@@ -25,7 +24,6 @@ class WebSocket extends _EventTarget {
         const urlValidationResult = isValidUrl(url)
         if (typeof urlValidationResult === 'string') {
           throw new DOMException(`Failed to construct 'WebSocket': ${urlValidationResult}`)
-          return
         }
         this._defineFields()
         this._observeProps()
@@ -34,7 +32,7 @@ class WebSocket extends _EventTarget {
         
         this._closeEventDict = {
           code: 1000,
-          reason: `Connection of mock WebSocket with url '${this.url}' is closed because you are so ugly.`,
+          reason: `Connection of mock WebSocket with url '${this.url}' is closed.`,
           wasClean: true,
         }
         this._index = i
@@ -52,11 +50,9 @@ class WebSocket extends _EventTarget {
   send (data) {
     if (arguments.length < 1) {
       throw new TypeError(`Failed to execute 'send' on 'WebSocket': 1 argument required, but only 0 present.`)
-      return
     }
     if (this._readyState === WebSocket.CONNECTING) {
       throw new DOMException(`Failed to execute 'send' on 'WebSocket': Still in CONNECTING state.`, 'InvalidStateError')
-      return
     } else if (this._readyState !== WebSocket.OPEN) {
       console.error('WebSocket is already in CLOSING or CLOSED state.')
       return
@@ -87,7 +83,6 @@ class WebSocket extends _EventTarget {
     // https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent#Status_codes
     if (code !== 1000 && (code < 3000 || code > 4999)) {
       throw new DOMException(`Failed to execute 'close' on 'WebSocket': The code must be either 1000, or between 3000 and 4999. ${code} is neither.`, 'InvalidAccessError')
-      return
     }
     this._readyState = WebSocket.CLOSING
     setTimeout(() => {
