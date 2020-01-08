@@ -55,13 +55,13 @@ wsm.mock({
   sendInterval: 1000,
 
   // [Function] Simulate receive method invoked by server.
-  receiver (data) => {
+  receiver (data) {
     
   },
 
   // [Function] Simulate send method invoked by server.
   // * Note: You'd better not use an arrow function in case that 'this' does not point to setting object.
-  sender () => {
+  sender () {
     this.response = 'This is a message sent by server.'
   },
 })
